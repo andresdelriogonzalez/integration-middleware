@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  title: Integration Middleware API
+  version: 1.0.0
+  description: Sincroniza clientes entre un sistema origen y un sistema destino.
+paths:
+  /sync/customers:
+    post:
+      operationId: syncCustomer
+      summary: Sincroniza un cliente del sistema origen al sistema destino
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [source_customer_id]
+              properties:
+                source_customer_id:
+                  type: integer
+      responses:
+        '201':
+          description: Cliente sincronizado con exito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncRecord'
+        '404':
+          description: El cliente no existe en el sistema origen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: El sistema destino fallo al recibir el cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /sync/customers/{syncId}:
+    get:
+      operationId: getSyncRecord
+      summary: Consulta el estado de una sincronizacion
+      parameters:
+        - name: syncId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Registro de sincronizacion encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncRecord'
+        '404':
+          description: No existe un registro con ese id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Verifica que el servicio esta arriba
+      responses:
+        '200':
+          description: Servicio operativo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+components:
+  schemas:
+    SyncRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        source_customer_id:
+          type: integer
+        target_id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        synced_at:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
