@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = "http://localhost:8003"
+BASE_URL = "http://localhost:8097"
 
 
 def test_sync_creates_customer_in_target():
@@ -10,7 +10,7 @@ def test_sync_creates_customer_in_target():
     )
     assert response.status_code == 201
     body = response.json()
-    assert body["name"] == "Andres Del Rio"
+    assert body["name"] == "Andrés Del Río"
     assert body["email"] == "andres@example.com"
     assert "target_id" in body
 
