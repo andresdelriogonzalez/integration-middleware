@@ -1,8 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
+
 created_customers = {}
 next_id = {"value": 100}
+failure_counts = {}
 
 class Handler(BaseHTTPRequestHandler):
     def _send(self, code, body):
