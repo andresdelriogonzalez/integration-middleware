@@ -1,16 +1,12 @@
 services:
   source-mock:
     build: ./mocks/source-system
-    # Sin 'ports': solo accesible internamente en la red de Docker por 'http://source-mock:8001'
 
   target-mock:
     build: ./mocks/target-system
-    # Sin 'ports': solo accesible internamente en la red de Docker por 'http://target-mock:8002'
 
   middleware-python:
     build: ./python-impl
-    ports:
-      - "8096:8096"  # Este es el único que sale al exterior (o que Easypanel gestionará)
     environment:
       SOURCE_URL: http://source-mock:8001
       TARGET_URL: http://target-mock:8002
