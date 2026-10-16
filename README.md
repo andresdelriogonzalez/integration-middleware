@@ -1,16 +1,16 @@
 # Integration Middleware
 
-Sincroniza clientes entre un sistema origen y un sistema destino via REST. Implementado en Python/FastAPI contra el OpenAPI, con TDD, idempotencia y despliegue en Docker.
+Synchronizes customers between a source system and a target system via REST. Implemented in Python/FastAPI following an OpenAPI contract, featuring TDD, idempotency, and Docker deployment.
 
-**Demo en vivo:** https://demos-integration-middleware.g4xorp.easypanel.host/
+**Live Demo:** https://demos-integration-middleware.g4xorp.easypanel.host/
 
-## Arquitectura
+## Architecture
 
-Sistema origen (mock) --> Middleware --> Sistema destino (mock)
+Source system (mock) --> Middleware --> Target system (mock)
 
-El middleware existe en implementación python-impl, validada contra suite de tests de aceptacion (tests/)y usando contrato (openapi/openapi.yaml) independiente del lenguaje.
+The middleware is implemented in Python (`python-impl`), validated against an acceptance test suite (`tests/`), and uses a language-independent API contract (`openapi/openapi.yaml`).
 
-## Como correrlo en local
+## How to Run Locally
 
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r python-impl/requirements.txt
@@ -19,16 +19,21 @@ python3 mocks/target-system/target_mock.py &
 uvicorn main:app --reload --port 8096 --app-dir python-impl
 pytest tests/
 
-## Decisiones tecnicas
+## Technical Decisions
 
-- Contract-first: el OpenAPI se escribio antes que el codigo (ver openapi/openapi.yaml).
-- TDD: los tests de aceptacion se escribieron antes de la implementacion.
-- Idempotencia: header Idempotency-Key evita duplicados en reintentos.
-- Docker: docker-compose.yml levanta los 3 servicios juntos.
+- **Contract-first:** The OpenAPI contract was written before any code (see `openapi/openapi.yaml`).
+- **TDD:** Acceptance tests were written prior to the implementation.
+- **Idempotency:** The `Idempotency-Key` header prevents duplicate records during retries.
+- **Docker:** `docker-compose.yml` spins up all 3 services together.
 
-## Estructura del repo
+## Repository Structure
 
-openapi/        contrato compartido
-mocks/          sistemas simulados para desarrollo
-python-impl/    implementacion en FastAPI
-tests/          suite de aceptacion (corre contra cualquiera de las dos implementaciones)
+- `mocks/`          Simulated systems for development
+- `openapi/`        Shared API contract
+- `tests/`          Acceptance test suite
+- `python-impl/`    FastAPI implementation
+
+## API Call Examples
+
+See [docs/api-examples.md](docs/api-examples.md) for concrete API calls and usage examples.
+
