@@ -15,6 +15,15 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/customers":
             length = int(self.headers.get("Content-Length", 0))
             data = json.loads(self.rfile.read(length))
+
+            simulate_failures = int(self.headers.get("X-Simulate-Failures", 0))
+            key = self.headers.get("Idempotency-Key", "no-key")
+            seen = failure_counts.get(key, 0)
+            if seen < simulate_failures:
+                failure_counts[key] = seen + 1
+                self._send(503, {"detail": "simulated failure"})
+                return
+
             new_id = next_id["value"]
             next_id["value"] += 1
             record = {"id": new_id, "name": data.get("name"), "email": data.get("email")}

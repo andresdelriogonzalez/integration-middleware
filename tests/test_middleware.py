@@ -33,3 +33,22 @@ def test_get_sync_status_after_creating():
     status = requests.get(f"{BASE_URL}/sync/customers/{sync_id}")
     assert status.status_code == 200
     assert status.json()["source_customer_id"] == 2
+
+def test_sync_same_customer_same_idempotency_key():
+    response1 = requests.post(
+        f"{BASE_URL}/sync/customers",
+        json={"source_customer_id": 1},
+        headers={"Idempotency-Key": "abc-234"}
+    )
+    sync_id1 = response1.json()["id"]
+
+    response2 = requests.post(
+        f"{BASE_URL}/sync/customers",
+        json={"source_customer_id": 1},
+        headers={"Idempotency-Key": "abc-234"}
+    )
+    sync_id2 = response2.json()["id"]
+
+    assert response1.status_code == 201
+    assert response2.status_code == 201
+    assert sync_id1 == sync_id2
