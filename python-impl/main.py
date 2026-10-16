@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import requests
 from datetime import datetime, timezone
 import time
+import os
 
 app = FastAPI()
 
@@ -10,8 +11,8 @@ sync_records = {}
 next_sync_id = {"value": 1}
 idempotency_cache = {}
 
-SOURCE_URL = "http://localhost:8001"
-TARGET_URL = "http://localhost:8002"
+SOURCE_URL = os.environ.get("SOURCE_URL", "http://localhost:8001")
+TARGET_URL = os.environ.get("TARGET_URL", "http://localhost:8002")
 
 class SyncRequest(BaseModel):
     source_customer_id: int

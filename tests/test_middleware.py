@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = "http://localhost:8097"
+BASE_URL = "http://localhost:8096"
 
 
 def test_sync_creates_customer_in_target():

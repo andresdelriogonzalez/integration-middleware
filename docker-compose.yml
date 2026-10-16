@@ -1,0 +1,21 @@
+services:
+  source-mock:
+    build: ./mocks/source-system
+    ports:
+      - "8001:8001"
+
+  target-mock:
+    build: ./mocks/target-system
+    ports:
+      - "8002:8002"
+
+  middleware-python:
+    build: ./python-impl
+    ports:
+      - "8096:8096"
+    environment:
+      SOURCE_URL: http://source-mock:8001
+      TARGET_URL: http://target-mock:8002
+    depends_on:
+      - source-mock
+      - target-mock
